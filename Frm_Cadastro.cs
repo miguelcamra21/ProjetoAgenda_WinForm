@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,7 +20,7 @@ namespace ProjetoAgenda_WinForm
 
         private void HabilitarButtonRegister()
         {
-            if (textBox_name.Text != "" && textBox_user.Text != "" && textBox_phone.Text != "" && textBox_password.Text.Length >= 8 && textBox_password2.Text.Length >= 8 && textBox_password.Text == textBox_password2.Text)
+            if (textBox_name.Text != "" && textBox_user.Text != "" && textBox_password.Text.Length >= 8 && textBox_password2.Text.Length >= 8 && textBox_password.Text == textBox_password2.Text)
             {
                 btn_register2.Enabled = true;
             }
@@ -53,10 +54,6 @@ namespace ProjetoAgenda_WinForm
             HabilitarButtonRegister();
         }
 
-        private void textBox_phone_TextChanged(object sender, EventArgs e)
-        {
-            HabilitarButtonRegister();
-        }
 
         private void textBox_password_TextChanged(object sender, EventArgs e)
         {
@@ -66,6 +63,22 @@ namespace ProjetoAgenda_WinForm
         private void textBox_password2_TextChanged(object sender, EventArgs e)
         {
             HabilitarButtonRegister();
+        }
+
+        private void btn_register2_Click(object sender, EventArgs e)
+        {
+            string stringConexao = "Server=localhost;Database=db_agenda;User ID=root;Password=root;";
+            MySqlConnection conexao = new MySqlConnection(stringConexao);
+
+            conexao.Open();
+
+            string sql = $"INSERT INTO tb_users (nome, usuario, telefone, senha) VALUES ('{textBox_name.Text}', '{textBox_user.Text}', '{textBox_phone.Text}', '{textBox_password}')";
+
+            MySqlCommand cmd = new MySqlCommand(sql, conexao);
+
+            cmd.ExecuteNonQuery();
+
+            conexao.Close();
         }
     }
 }
